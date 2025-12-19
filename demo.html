@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Surplus Food</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* --- Professional Modern Styles --- */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #f8fafc;
+      color: #23272f;
+    }
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: #252c41;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+body {
+  padding-top: 60px; /* adjust based on nav height */
+}
+
+    .nav-left a, .nav-right a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 0.7em;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-left a:hover, .nav-right a:hover {
+      color: #75d179;
+    }
+    .nav-brand {
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #a5f495;
+      text-shadow: 1px 1px 2px #0002;
+    }
+    #logoutBtn {
+      background: #ff5a5f;
+      color: #fff;
+      border: none;
+      padding: 0.5em 1.1em;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-left: 1em;
+      font-weight: bold;
+      transition: background 0.15s;
+    }
+    #logoutBtn:hover {
+      background: #e3393d;
+    }
+    .hero {
+      text-align: center;
+      padding: 3rem 1rem 2rem 1rem;
+      background: linear-gradient(80deg, #e9ffe7 60%, #c2ffd4 100%);
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 2.45rem;
+      color: #252c41;
+    }
+    .hero p {
+      color: #4c585e;
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin: 1.2em auto 0 auto;
+    }
+    #stats {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 2.5rem 0 2rem 0;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 2em 1.5em;
+      box-shadow: 0 2px 8px #ccd6df44;
+      text-align: center;
+      min-width: 170px;
+    }
+    .stat-card h2 {
+      margin: 0 0 0.2em 0;
+      font-size: 1.3em;
+      color: #49b47b;
+    }
+    .stat-card p {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #23272f;
+      margin: 0;
+    }
+    #foodList {
+      display: grid;
+      gap: 1.4em;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      margin: 2.5em auto 3em auto;
+      max-width: 1100px;
+      padding: 0 2em;
+    }
+    .food-card {
+      background: #fff;
+      border-radius: 9px;
+      box-shadow: 0 2px 7px #b7e7c855;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .food-card img {
+      width: 100%;
+      object-fit: cover;
+      max-height: 170px;
+    }
+    .food-card-content {
+      padding: 1.3em 1.2em;
+    }
+    .food-name {
+      font-size: 1.15rem;
+      font-weight: bold;
+      margin: 0 0 0.2em 0;
+    }
+    .food-info {
+      margin: 2px 0 0 0;
+      color: #4e6250;
+      font-size: 1em;
+    }
+    #addFoodSection {
+      background: #fff;
+      max-width: 420px;
+      margin: 3em auto 2em auto;
+      border-radius: 10px;
+      padding: 2em 2em 1.2em 2em;
+      box-shadow: 0 2px 16px #b3eedf55;
+    }
+    #foodForm input, #foodForm button {
+      width: 100%;
+      margin-bottom: 1.2em;
+      padding: 0.7em;
+      border: 1px solid #d1e7dd;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    #foodForm button {
+      background: #75d179;
+      border: none;
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.17s;
+    }
+    #foodForm button:hover {
+      background: #53b167;
+    }
+    @media (max-width: 800px) {
+      #stats { flex-direction: column; gap: 0.8rem; align-items: center; }
+      .nav-left, .nav-right { flex-direction: column; gap: 0.3em;}
+      #foodList { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 1.4em; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="nav-left">
+      <span class="nav-brand">Smart Surplus</span>
+      <a href="index.html">Home</a>
+      <a href="events.html">Events</a>
+      <a href="analytics.html">Impact</a>
+    </div>
+    <div class="nav-right" id="navbarUser">
+      <a href="login.html">User Login</a>
+      <a href="admin-login.html">Admin Login</a>
+      <button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>Reduce Waste, Serve More. <br> Smart Surplus Food Initiative</h1>
+    <p>
+      List, find, and distribute surplus food across campus. Save meals, reduce environmental impact, and foster a connected community.
+    </p>
+  </div>
+
+  <!-- Stats Section -->
+  <section id="stats">
+    <div class="stat-card">
+      <h2 id="foodSaved">0 kg</h2>
+      <p>Food Saved</p>
+    </div>
+    <div class="stat-card">
+      <h2 id="peopleServed">0</h2>
+      <p>People Served</p>
+    </div>
+    <div class="stat-card">
+      <h2 id="carbonSaved">0 kg CO₂</h2>
+      <p>Carbon Saved</p>
+    </div>
+  </section>
+
+  <h1 style="text-align:center;">Available Surplus Food</h1>
+  <div id="foodList">
+    <!-- JavaScript will populate food cards here -->
+  </div>
+
+  <!-- Add Food (Admins only, hidden by default) -->
+  <div id="addFoodSection" style="display:none;">
+    <h2>Add Surplus Food</h2>
+    <form id="foodForm">
+      <input type="text" id="name" placeholder="Food Name" required />
+      <input type="text" id="type" placeholder="Type (e.g. Rice, Curry)" />
+      <input type="number" id="quantity" placeholder="Quantity (kg)" required />
+      <input type="text" id="freshnessStatus" placeholder="Freshness Status" />
+      <input type="datetime-local" id="availableUntil" required />
+      <input type="text" id="location" placeholder="Location" required />
+      <input type="number" id="safeForHours" placeholder="Safe for (hours)" />
+      <input type="file" id="image" accept="image/*" />
+      <button type="submit">List Food</button>
+    </form>
+  </div>
+
+  <!-- Scripts: Auth, App Logic, Enhanced Navbar -->
+  <script src="js/auth.js"></script>
+  <script src="js/index.js"></script>
+  <script>
+    // --- Responsive Nav Bar / Auth Example JS ---
+    function logout() {
+      // Your logout logic here
+      alert('Logged out!');
+      document.getElementById('logoutBtn').style.display = 'none';
+      document.getElementById('navbarUser').innerHTML = `
+        <a href="login.html">User Login</a>
+        <a href="admin-login.html">Admin Login</a>
+      `;
+    }
+    // Example to display/hide admin form based on auth status
+    document.addEventListener('DOMContentLoaded', function() {
+      // Simulate user
+      let isAdmin = false; // Change from auth.js
+      if(isAdmin) {
+        document.getElementById('addFoodSection').style.display = 'block';
+        document.getElementById('logoutBtn').style.display = '';
+      }
+    });
+    // Populate stats - replace with real backend data!
+    document.getElementById('foodSaved').textContent = "724 kg";
+    document.getElementById('peopleServed').textContent = "1,040";
+    document.getElementById('carbonSaved').textContent = "1,900 kg CO₂";
+  </script>
+</body>
+</html>

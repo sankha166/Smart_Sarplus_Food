@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Events - Smart Surplus Food</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 20px 30px;
+      background: #f7faf9;
+      color: #2a3a45;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: #49b47b;
+      padding: 0.8rem 2.9rem;
+      border-radius: 10px;
+      box-shadow: 5 4px 10px rgba(73,180,123,0.3);
+      display: flex;
+      gap: 3.5rem;
+      align-items: center;
+      color: white;
+      margin-bottom: 2rem;
+      font-weight: 800;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #a7dba1;
+    }
+    nav button {
+      margin-left: auto;
+      background: transparent;
+      border: 1.8px solid white;
+      border-radius: 6px;
+      padding: 5px 14px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    nav button:hover {
+      background-color: white;
+      color: #49b47b;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #2a3a45;
+    }
+
+    form#eventForm {
+      max-width: 500px;
+      margin: 0 auto 3rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    form#eventForm input[type="text"],
+    form#eventForm input[type="datetime-local"] {
+      flex: 1 1 200px;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #b7d0be;
+      font-size: 1.05rem;
+      outline-offset: 2px;
+      outline-color: transparent;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    form#eventForm input:focus {
+      border-color: #49b47b;
+      outline-color: #49b47b;
+      box-shadow: 0 0 8px #49b47baa;
+    }
+
+    form#eventForm button {
+      background-color: #49b47b;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.85rem 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(73,180,123,0.6);
+      transition: background-color 0.3s ease;
+    }
+    form#eventForm button:hover {
+      background-color: #3a7a56;
+      box-shadow: 0 8px 20px rgba(58,122,86,0.7);
+    }
+
+    #eventsList {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .event-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      padding: 1.5rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 35px rgba(0,0,0,0.15);
+    }
+
+    .event-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .event-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #2a3a45;
+      margin-bottom: 0.3rem;
+    }
+
+    .event-date {
+      font-size: 1rem;
+      color: #65746d;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .event-calendar {
+      font-size: 0.9rem;
+      color: #49b47b;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .event-calendar:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 680px) {
+      form#eventForm {
+        flex-direction: column;
+      }
+      #eventsList {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="events.html" aria-current="page">Events</a>
+    <a href="analytics.html">Analytics</a>
+    <button onclick="logout()">Logout</button>
+  </nav>
+
+  <h1>Event Management</h1>
+
+  <div id="eventFormWrapper" style="max-width: 500px; margin: 0 auto 3rem;"></div>
+
+  <h2>Upcoming Events</h2>
+  <div id="eventsList" aria-live="polite"></div>
+
+  <script>
+    // Simulate user role fetched from localStorage or your auth system
+    const userRole = (localStorage.getItem("role") || "").toLowerCase();
+
+    // Only allow admin or donor to see the event logging form
+    const eventFormWrapper = document.getElementById('eventFormWrapper');
+    if(userRole === 'admin' || userRole === 'donor') {
+      eventFormWrapper.innerHTML = `
+        <form id="eventForm" autocomplete="off" novalidate>
+          <input type="text" id="eventName" placeholder="Event Name" required />
+          <input type="datetime-local" id="eventDate" required />
+          <button type="submit">Log Event</button>
+        </form>
+      `;
+      // Add form submit handler (example)
+      document.getElementById('eventForm').addEventListener('submit', e => {
+        e.preventDefault();
+        alert('Event logging functionality to implement.');
+      });
+    } else {
+      // Non authorized users see no form
+      eventFormWrapper.innerHTML = `<p style="text-align:center; color:#65746d; font-style: italic;">You do not have permission to log events.</p>`;
+    }
+
+    // Updated events with direct image URLs
+    const exampleEvents = [
+      {
+        id: 1,
+        name: "HackHeritage 3.0",
+        date: "2025-08-22T10:00",
+        image: "https://images.shiksha.com/mediadata/images/1742204771phpowAav5.jpeg",
+        calendarLink: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=HackHeritage+3.0&dates=20250822T100000/20250822T130000"
+      },
+      {
+        id: 2,
+        name: "Surplus Food Distribution",
+        date: "2025-10-01T08:30",
+        image: "https://c8.alamy.com/comp/W09AW0/poor-children-at-a-food-distribution-camp-in-new-delhi-india-W09AW0.jpg",
+        calendarLink: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Surplus+Food+Distribution&dates=20251001T083000/20251001T110000"
+      },
+      {
+        id: 3,
+        name: "Volunteer Meetup & Training",
+        date: "2025-10-20T18:00",
+        image: "https://tryengineering.org/wp-content/uploads/ieee-members-volunteer-training.jpg",
+        calendarLink: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Volunteer+Meetup+%26+Training&dates=20251020T180000/20251020T200000"
+      }
+    ];
+
+    const eventsList = document.getElementById('eventsList');
+
+    function formatDate(datetime) {
+      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      return new Date(datetime).toLocaleDateString(undefined, options);
+    }
+
+    function renderEvents(events) {
+      eventsList.innerHTML = '';
+      events.forEach(event => {
+        const card = document.createElement('div');
+        card.className = "event-card";
+        card.setAttribute("tabindex", 0);
+        card.addEventListener('click', () => window.open(event.calendarLink, "_blank"));
+        card.addEventListener('keypress', e => { if(e.key === 'Enter' || e.key === ' ') card.click(); });
+
+        card.innerHTML = `
+          <img src="${event.image}" alt="${event.name}" class="event-image" />
+          <div class="event-info">
+            <div class="event-name">${event.name}</div>
+            <div class="event-date">${formatDate(event.date)}</div>
+            <a href="${event.calendarLink}" target="_blank" rel="noopener" class="event-calendar" aria-label="Add ${event.name} to calendar">Add to Calendar</a>
+          </div>
+        `;
+        eventsList.appendChild(card);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderEvents(exampleEvents);
+    });
+  </script>
+</body>
+</html>

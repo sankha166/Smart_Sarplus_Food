@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analytics - Smart Surplus Food</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Professional and clean analytics dashboard styling with lighter backgrounds */
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #fbfcfd; /* lighter background */
+      color: #2a3a45;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 30px;
+    }
+
+    nav {
+      background: #a0d6a0; /* lighter green */
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(160, 214, 160, 0.4);
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      color: #1b3a1b;
+      margin-bottom: 2.5rem;
+      font-weight: 600;
+    }
+
+    nav a {
+      color: #1b3a1b;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #5bc75b;
+    }
+
+    nav button {
+      margin-left: auto;
+      background: transparent;
+      border: 1.8px solid #1b3a1b;
+      border-radius: 6px;
+      padding: 5px 14px;
+      font-weight: 600;
+      color: #1b3a1b;
+      cursor: pointer;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    nav button:hover {
+      background-color: #1b3a1b;
+      color: #a0d6a0;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 1.7rem;
+      color: #2a3a45;
+      text-align: center;
+    }
+
+    #summaryStats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin: 1.5rem 0 3rem;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #summaryStats > div {
+      background: #daf3d8; /* very light green */
+      color: #2a3a45;
+      border-radius: 15px;
+      padding: 1.8rem 2.5rem;
+      width: 280px;
+      box-shadow: 0 6px 18px rgba(160, 214, 160, 0.25);
+      text-align: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      transition: background-color 0.3s ease;
+    }
+
+    #summaryStats > div:nth-child(2) {
+      background: #c7e9f1; /* light blue */
+      box-shadow: 0 6px 18px rgba(118, 183, 212, 0.25);
+    }
+
+    #summaryStats > div:nth-child(3) {
+      background: #fff3cb; /* pale yellow */
+      box-shadow: 0 6px 18px rgba(255, 221, 123, 0.25);
+      color: #555b22;
+    }
+
+    #summaryStats div > .number {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 0.3rem;
+      letter-spacing: 1.5px;
+      text-shadow: none;
+    }
+
+    #summaryStats div > .label {
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    #analytics {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: #fff; /* lighter card bg */
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      padding: 1.8rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.25s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.1);
+    }
+
+    .stat-value {
+      font-size: 3.2rem;
+      font-weight: 900;
+      color: #4caf50; /* softer green */
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-label {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #65746d;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      margin-bottom: 1rem;
+    }
+
+    .chart-container, canvas {
+      width: 100% !important;
+      min-height: 220px;
+    }
+
+    .fact-section {
+      background: #f0f6f0;
+      padding: 1rem 1.6rem;
+      border-radius: 12px;
+      margin-top: 2.5rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 8px 25px rgba(73,180,123,0.08);
+      color: #356635;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .fact-section h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: #2d4629;
+    }
+
+    /* Responsive */
+    @media (max-width: 680px) {
+      #analytics {
+        grid-template-columns: 1fr;
+      }
+      nav {
+        flex-wrap: wrap;
+      }
+      nav button {
+        margin: 10px 0 0 auto;
+      }
+      #summaryStats {
+        flex-direction: column;
+        gap: 1.8rem;
+      }
+      #summaryStats > div {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="events.html">Events</a>
+    <a href="analytics.html" aria-current="page">Analytics</a>
+    <button onclick="logout()">Logout</button>
+  </nav>
+
+  <h1>Analytics Dashboard (Admin)</h1>
+
+  <section id="summaryStats">
+    <div>
+      <div class="number" id="totalItems">0</div>
+      <div class="label">Total Items</div>
+    </div>
+    <div>
+      <div class="number" id="totalQuantitySaved">0 kg</div>
+      <div class="label">Quantity Saved</div>
+    </div>
+    <div>
+      <div class="number" id="carbonSaved">0 kg CO₂</div>
+      <div class="label">Carbon Saved</div>
+    </div>
+  </section>
+
+  <div id="analytics">
+    <div class="card">
+      <div class="stat-value" id="foodSaved">0 kg</div>
+      <div class="stat-label">Food Saved</div>
+      <canvas id="foodSavedChart"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="stat-value" id="peopleServed">0</div>
+      <div class="stat-label">People Served</div>
+      <canvas id="peopleServedChart"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="stat-value" id="carbonSavedChartValue">0 kg CO₂</div>
+      <div class="stat-label">Carbon Emission Reduced</div>
+      <canvas id="carbonSavedChart"></canvas>
+    </div>
+  </div>
+
+  <section class="fact-section" aria-label="Interesting Analytics Facts">
+    <h2>Did You Know?</h2>
+    <p>
+      - Every kilogram of food saved reduces about 4.5 kilograms of CO₂ emissions.<br>
+      - Over 1 billion people worldwide experience food insecurity.<br>
+      - Food waste is the third largest emitter of greenhouse gases globally.<br>
+      - Smart redistribution of surplus food can feed thousands and reduce environmental impacts.
+    </p>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!--<script src="js/analytics.js"></script>-->
+  <script>
+    const exampleData = {
+      totalItems: 1287,
+      totalQuantitySaved: 4520,
+      carbonSaved: 20350,
+      foodSavedMonthly: [75, 25],
+      peopleServedMonthly: [500, 700, 850, 600, 900, 1100],
+      carbonSavedMonthly: [1000, 1200, 1300, 1100, 1400, 1600]
+    };
+
+    function updateSummaryStats(items, quantity, carbon) {
+      document.getElementById("totalItems").textContent = items || "0";
+      document.getElementById("totalQuantitySaved").textContent = (quantity !== undefined ? quantity + " kg" : "0 kg");
+      document.getElementById("carbonSaved").textContent = (carbon !== undefined ? carbon + " kg CO₂" : "0 kg CO₂");
+      document.getElementById("foodSaved").textContent = (quantity !== undefined ? quantity + " kg" : "0 kg");
+      document.getElementById("peopleServed").textContent = exampleData.peopleServedMonthly.reduce((a,b) => a+b, 0);
+      document.getElementById("carbonSavedChartValue").textContent = (carbon !== undefined ? carbon + " kg CO₂" : "0 kg CO₂");
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateSummaryStats(exampleData.totalItems, exampleData.totalQuantitySaved, exampleData.carbonSaved);
+
+      const ctxFood = document.getElementById('foodSavedChart').getContext('2d');
+      new Chart(ctxFood, {
+        type: 'doughnut',
+        data: {
+          labels: ['Food Saved', 'Food Wasted'],
+          datasets: [{
+            data: exampleData.foodSavedMonthly,
+            backgroundColor: ['#49b47b', '#ddd'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          cutout: '70%',
+          plugins: {
+            legend: { display: true, position: 'bottom' }
+          }
+        }
+      });
+
+      const ctxPeople = document.getElementById('peopleServedChart').getContext('2d');
+      new Chart(ctxPeople, {
+        type: 'bar',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'People Served',
+            data: exampleData.peopleServedMonthly,
+            backgroundColor: '#49b47b',
+            borderRadius: 5,
+            barPercentage: 0.6
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 200 }
+            }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      const ctxCarbon = document.getElementById('carbonSavedChart').getContext('2d');
+      new Chart(ctxCarbon, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'CO₂ Saved (kg)',
+            data: exampleData.carbonSavedMonthly,
+            fill: true,
+            backgroundColor: 'rgba(73, 180, 123, 0.25)',
+            borderColor: '#49b47b',
+            borderWidth: 3,
+            tension: 0.3,
+            pointRadius: 5,
+            pointBackgroundColor: '#49b47b'
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 200 }
+            }
+          },
+          plugins: { legend: { display: true, position: 'top' } }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

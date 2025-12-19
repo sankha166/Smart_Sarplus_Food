@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Surplus Food</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Updated card styles for food list with 3 cards per row */
+    .food-list-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+
+    .food-card {
+      flex: 1 1 calc(33.333% - 32px); /* 3 cards per row */
+      max-width: 340px; /* optional */
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 22px rgba(0,0,0,0.11);
+      padding: 0 0 16px;
+      margin: 12px 0;
+      transition: box-shadow 0.2s;
+    }
+    .food-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+    .food-card-header {
+      padding: 12px 16px 0 16px;
+      display: flex;
+      gap: 8px;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.8em;
+      padding: 2px 10px;
+      border-radius: 12px;
+      color: #fff;
+    }
+    .tag.new { background: #f6a622; }
+    .tag.veg { background: #3db94a; }
+    .tag.fruit { background: #e97451; }
+    .tag.salad { background: #59c352; }
+    
+    .food-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px 10px 0 0;
+    }
+    .food-card-body {
+      padding: 14px 18px 8px 18px;
+      flex: 1 1 auto;
+    }
+    .food-title {
+      margin: 5px 0 8px 0;
+      font-size: 1.3em;
+    }
+    .food-desc {
+      color: #696969;
+      font-size: 1em;
+      margin-bottom: 8px;
+    }
+    .food-meta {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0 0;
+      font-size: 0.98em;
+      color: #444;
+    }
+    .food-meta li {
+      margin-bottom: 2px;
+      line-height: 1.3;
+    }
+    .food-card-footer {
+      padding: 0 18px 0 18px;
+    }
+    .reserve-btn {
+      width: 100%;
+      margin-top: 14px;
+      padding: 10px 0;
+      border: none;
+      background: #24af63;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .reserve-btn:hover {
+      background: #178f4e;
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 1100px) {
+      .food-card {
+        flex: 1 1 calc(50% - 32px); /* 2 cards per row */
+      }
+    }
+    @media (max-width: 700px) {
+      .food-card {
+        flex: 1 1 100%; /* 1 card per row */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="nav-left">
+      <span class="nav-brand">Smart Surplus</span>
+      <a href="index.html">Home</a>
+      <a href="events.html">Events</a>
+      <a href="analytics.html">Impact</a>
+    </div>
+    <div class="nav-right" id="navbarUser">
+      <span id="authButtons">
+        <a href="login.html">User Login</a> | 
+        <a href="admin-login.html" class="hero-btn donate">Donate Surplus Food</a>
+      </span>
+      <div id="profileMenu" class="profile-menu" style="display:none;">
+        <img id="profileIcon" src="images/default-avatar.png" alt="Profile" />
+        <div id="profileDropdown" class="dropdown-content">
+          <a href="edit-profile.html">Edit Profile</a>
+          <a href="#" id="logoutLink">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>Reduce Waste, Serve More.<br>Smart Surplus Food Initiative</h1>
+    <p>
+      List, find, and distribute surplus food across campus. Save meals, reduce environmental impact, and foster a connected community.
+    </p>
+    <div class="hero-buttons">
+      <button class="hero-btn find">Find Food Near You</button>
+      <a href="admin-login.html" class="hero-btn donate">Donate Surplus Food</a>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
+  <section id="stats">
+    <div class="stat-card"><h2 id="foodSaved">0 kg</h2><p>Food Saved</p></div>
+    <div class="stat-card"><h2 id="peopleServed">0</h2><p>People Served</p></div>
+    <div class="stat-card"><h2 id="carbonSaved">0 kg CO₂</h2><p>Carbon Saved</p></div>
+  </section>
+
+  <!-- Available Surplus Food Section -->
+  <h1 class="section-title">Available Surplus Food</h1>
+  <div id="foodList" class="food-list-container">
+    <!-- Food cards will be dynamically inserted here -->
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('/api/food')
+      .then(res => res.json())
+      .then(data => {
+        renderFoodCards(data);
+      })
+      .catch(err => {
+        console.error('Error fetching food data:', err);
+        document.getElementById('foodList').innerHTML = '<p>Failed to load food items.</p>';
+      });
+  });
+
+  function renderFoodCards(items) {
+    const foodList = document.getElementById('foodList');
+    foodList.innerHTML = '';
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'food-card';
+
+      // Build tags based on freshnessStatus and type
+      let tags = [];
+      if (item.freshnessStatus) tags.push(item.freshnessStatus);
+      if (item.type) tags.push(item.type);
+
+      const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+
+      card.innerHTML = `
+        <div class="food-card-header">
+          ${tagsHtml}
+        </div>
+        <img src="${item.imageUrl ? item.imageUrl : '/uploads/default.jpg'}" alt="${item.name}" class="food-image" />
+        <div class="food-card-body">
+          <h2 class="food-title">${item.name}</h2>
+          <ul class="food-meta">
+            <li><strong>Location:</strong> ${item.location || '-'}</li>
+            <li><strong>Quantity:</strong> ${item.quantity || '-'}</li>
+            <li><strong>Available Until:</strong> ${item.availableUntil ? new Date(item.availableUntil).toLocaleString() : '-'}</li>
+          </ul>
+        </div>
+        <div class="food-card-footer">
+          <button class="reserve-btn">Reserve This Food</button>
+        </div>
+      `;
+      foodList.appendChild(card);
+    });
+  }
+</script>
+
+
+  <script src="js/auth.js"></script>
+  <script src="js/index.js"></script>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-about">
+        <h3>Smart Surplus Food</h3>
+        <p>
+          Empowering communities to reduce food waste and fight hunger through smart surplus management. Join us in making a sustainable impact.
+        </p>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="analytics.html">Impact</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4>Contact Us</h4>
+        <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+        <p>Phone: +123‑456‑7890</p>
+        <p>Address: 123 Campus Lane, City, State</p>
+      </div>
+      <div class="footer-social">
+        <h4>Follow Us</h4>
+        <a href="#" aria-label="Facebook"><img src="images/icons/facebook.svg" alt="Facebook" /></a>
+        <a href="#" aria-label="Twitter"><img src="images/icons/twitter.svg" alt="Twitter" /></a>
+        <a href="#" aria-label="Instagram"><img src="images/icons/instagram.svg" alt="Instagram" /></a>
+        <a href="#" aria-label="LinkedIn"><img src="images/icons/linkedin.svg" alt="LinkedIn" /></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Smart Surplus. All rights reserved.</p>
+      <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Use</a></p>
+    </div>
+  </footer>
+</body>
+</html>

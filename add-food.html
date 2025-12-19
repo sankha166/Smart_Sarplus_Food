@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Add Food - Smart Surplus Food</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body {
+      background: #f0f7f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      color: #2d3a45;
+    }
+
+    .form-container {
+      background: white;
+      padding: 2rem 2.5rem;
+      max-width: 480px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgb(73 180 123 / 0.2);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #49b47b;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    input[type="file"] {
+      padding: 0.75rem 1.2rem;
+      font-size: 1.05rem;
+      border: 1px solid #b7d0be;
+      border-radius: 8px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      outline-offset: 2px;
+      outline-color: transparent;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="datetime-local"]:focus,
+    input[type="file"]:focus {
+      border-color: #49b47b;
+      outline-color: #49b47b;
+      box-shadow: 0 0 6px #49b47bAA;
+    }
+
+    input[type="file"] {
+      padding: 0.5rem 1rem;
+    }
+
+    button {
+      background-color: #49b47b;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 0.85rem 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+      box-shadow: 0 5px 15px rgba(73, 180, 123, 0.5);
+    }
+
+    button:hover {
+      background-color: #3a7a56;
+      box-shadow: 0 8px 22px rgba(58, 122, 86, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Add Surplus Food</h1>
+    <form id="foodForm" enctype="multipart/form-data" autocomplete="off" novalidate>
+      <input type="text" id="name" name="name" placeholder="Food Name" required />
+      <input type="text" id="type" name="type" placeholder="Type (e.g., Rice, Curry)" required />
+      <input type="number" id="quantity" name="quantity" placeholder="Quantity (kg)" min="0.1" step="0.1" required />
+      <input type="text" id="freshnessStatus" name="freshnessStatus" placeholder="Freshness Status" required />
+      <input type="datetime-local" id="availableUntil" name="availableUntil" required />
+      <input type="text" id="location" name="location" placeholder="Location" required />
+      <input type="number" id="safeForHours" name="safeForHours" placeholder="Safe for (hours)" min="1" step="1" required />
+      <input type="file" id="image" name="image" accept="image/*" required />
+
+      <button type="submit">Add Food</button>
+    </form>
+  </div>
+
+  <script src="js/food.js"></script>
+</body>
+</html>

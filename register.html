@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register - Smart Surplus Food</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 1rem;
+      box-sizing: border-box;
+      color: #23272f;
+    }
+
+    .register-container {
+      background: #fff;
+      padding: 2.5rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 3px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .register-container h1 {
+      margin-bottom: 1.7rem;
+      font-weight: 700;
+      color: #49b47b;
+      font-size: 2rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    form input, form select {
+      font-size: 1rem;
+      padding: 0.75em 1em;
+      margin-bottom: 1.2rem;
+      border-radius: 6px;
+      border: 1px solid #cad3c8;
+      outline-offset: 2px;
+      transition: border-color 0.15s;
+    }
+
+    form input:focus, form select:focus {
+      border-color: #75d179;
+      outline: none;
+      box-shadow: 0 0 5px #75d179AA;
+    }
+
+    form button {
+      background-color: #49b47b;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 0.85em 1em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    form button:hover {
+      background-color: #3d875f;
+    }
+
+    .login-link {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: #4c585e;
+    }
+
+    .login-link a {
+      color: #49b47b;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+
+    .login-link a:hover {
+      color: #3d875f;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .register-container {
+        padding: 2rem 2rem;
+      }
+
+      form button {
+        font-size: 1rem;
+        padding: 0.75em 1em;
+      }
+
+      .register-container h1 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h1>Create your account</h1>
+    <form id="registerForm" autocomplete="off" novalidate>
+      <input type="text" id="name" name="name" placeholder="Full Name" required minlength="2" />
+      <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" />
+      <input type="password" id="password" name="password" placeholder="Password" required minlength="6" autocomplete="new-password" />
+      <select id="role" name="role" required>
+        <option value="" disabled selected>Select your role</option>
+        <option value="recipient">Recipient</option>
+        <option value="donor">Donor</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button type="submit">Register</button>
+    </form>
+    <p class="login-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </p>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
