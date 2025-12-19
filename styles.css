@@ -83,11 +83,7 @@ nav {
 .hero-btn.find:hover {
   background: #3d875f;
 }
-.hero-btn.donate {
-  background: #fff;
-  color: #49b47b;
-  border: 2px solid #49b47b;
-}
+
 .hero-btn.donate:hover {
   background: #49b47b;
   color: #fff;
@@ -362,3 +358,4 @@ nav {
 .reserve-btn:hover {
   background: #178f4e;
 }
+
